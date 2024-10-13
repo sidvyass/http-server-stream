@@ -1,4 +1,5 @@
 import socket
+import time
 
 
 class HttpServer:
@@ -14,10 +15,12 @@ class HttpServer:
             print(clientsocket)
             print(addr)
 
-            buf = clientsocket.recv(64)
+            buf = clientsocket.recv(4096)
 
             if len(buf) > 0:
                 self._parse(buf.decode(), clientsocket)
+
+    # NOTE: to terminate the connection we need to first accept it and then pass it on to the session socket
 
     def _parse(self, msg, clientsock):
         # will parse the message and return a response
@@ -29,6 +32,7 @@ class HttpServer:
         request_host = l[1]
         request_content = l[2]
 
+        time.sleep(5)  # to define timeout
         if request_type.startswith("GET"):
             print("sending...")
             clientsock.send("200".encode())
